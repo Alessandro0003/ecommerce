@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ProxyService } from './proxy/service/proxy.service';
+import { ProxyService } from './proxy/services/proxy.service';
 
 @Controller()
 export class AppController {
