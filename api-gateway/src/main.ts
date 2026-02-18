@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { corsOriginValidator } from './utils/cors-validator';
+import { env } from './env';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -63,7 +64,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  const port = process.env.PORT ?? 3000;
+  const port = env.PORT ?? 3000;
   await app.listen(port);
 
   console.log(`🚀 API Gateway running on port ${port}`);
