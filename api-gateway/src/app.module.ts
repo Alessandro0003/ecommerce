@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ProxyModule } from './proxy/proxy.module';
 import { MiddlewareModule } from './middleware/middleware.module';
@@ -13,23 +13,27 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ThrottlerModule.forRoot([
-      {
-        name: 'short',
-        ttl: 1000, // 1 seg
-        limit: 10, // 10 request per seg
-      },
-      {
-        name: 'medium',
-        ttl: 6000, // 1 min
-        limit: 100, // 100 request por minuto
-      },
-      {
-        name: 'long',
-        ttl: 900000, // 15 min
-        limit: 1000, // 1000 request per 15 min
-      },
-    ]),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => [
+        {
+          name: 'short',
+          ttl: 1000, // 1 segundo
+          limit: configService.get<number>('RATE_LIMIT_SHORT', 10), // Valor padrão de 10 requisições por segundo
+        },
+        {
+          name: 'medium',
+          ttl: 60000, // 1 minuto
+          limit: configService.get<number>('RATE_LIMIT_MEDIUM', 100), // Valor padrão de 100 requisições por minuto
+        },
+        {
+          name: 'long',
+          ttl: 900000, // 15 minutos
+          limit: configService.get<number>('RATE_LIMIT_LONG', 1000), // Valor padrão de 1000 requisições por 15 minutos
+        },
+      ],
+      inject: [ConfigService],
+    }),
     ProxyModule,
     MiddlewareModule,
     AuthModule,
