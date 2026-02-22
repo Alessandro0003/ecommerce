@@ -7,6 +7,12 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 
+interface JwtUser {
+  userId: string;
+  email: string;
+  role: string;
+}
+
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   // o reflector e usado para acessar os metadados.
@@ -30,11 +36,19 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleRequest(err: any, user: any, _info: any) {
+  handleRequest<TUSer = JwtUser>(
+    err: Error | null,
+    user: JwtUser | false,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _info: unknown,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _context: ExecutionContext,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _status?: unknown,
+  ): TUSer {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }
-    return user;
+    return user as TUSer;
   }
 }

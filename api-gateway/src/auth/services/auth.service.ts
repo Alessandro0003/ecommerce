@@ -13,8 +13,18 @@ export interface UserSession {
     email: string;
     firstName: string;
     lastName: string;
-    role: string;
     status;
+  } | null;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: string;
   } | null;
 }
 
@@ -25,7 +35,7 @@ export class AuthService {
     private readonly httpService: HttpService,
   ) {}
 
-  validateJwtToke(token: string): Promise<any> {
+  validateJwtToke(token: string): Promise<AuthResponse> {
     try {
       return this.jwtService.verify(token);
     } catch {
@@ -47,7 +57,7 @@ export class AuthService {
     }
   }
 
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto): Promise<AuthResponse> {
     try {
       const { data } = await firstValueFrom(
         this.httpService.post(
@@ -65,7 +75,7 @@ export class AuthService {
     }
   }
 
-  async register(registerDto: RegisterDto) {
+  async register(registerDto: RegisterDto): Promise<AuthResponse> {
     try {
       const { data } = await firstValueFrom(
         this.httpService.post(
