@@ -117,7 +117,16 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: {},
+    customSiteTitle: 'E-commerce API Gateway Documentation',
+    customfavIcon: 'https://nestjs.com/img/logo-small.svg',
+    customCss: `
+      .swagger-ui .topbar { display: none }
+      .swagger-ui .info .title { color: #3f3cbb; }
+
+    `,
+  });
 
   const port = env.PORT ?? 3000;
   await app.listen(port);
