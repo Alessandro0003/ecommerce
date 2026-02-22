@@ -56,9 +56,64 @@ async function bootstrap() {
   // Configuration Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('E-commerce API Gateway')
-    .setDescription('API Gateway for E-commerce Microservices')
+    .setDescription(
+      `
+      API Gateway para sistema E-commerce com microservices.
+      
+      Serviços Disponíveis:
+      - Users Service: Gerenciamento de usuários, autenticação e autorização.
+      - Products Service: Gerenciamento de produtos, categorias e estoque.
+      - Checkout Service: Processamento de pedidos, pagamentos e histórico de compras.
+      - Payments Service: Integração com gateways de pagamento, processamento de transações e gerenciamento de métodos de pagamento.
+
+      Autenticação:
+      - Utiliza JWT Bearer token para rotas protegidas.
+      - Use Session token para validação de sessão
+    `,
+    )
     .setVersion('1.0')
-    .addBearerAuth()
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token to access protected routes',
+        in: 'header',
+      },
+      'JWT-Auht',
+    )
+    .addApiKey(
+      {
+        type: 'apiKey',
+        name: 'x-session-token',
+        in: 'header',
+        description: 'Session token for use validations',
+      },
+      'Session-Token',
+    )
+    .addTag(
+      'Authentication',
+      'Endpoints relacionados à autenticação e registro de usuários',
+    )
+    .addTag('Users', 'Endpoints relacionados ao gerenciamento de usuários')
+    .addTag(
+      'Products',
+      'Endpoints relacionados ao gerenciamento de produtos e categorias',
+    )
+    .addTag(
+      'Checkout',
+      'Endpoints relacionados ao processamento de pedidos e histórico de compras',
+    )
+    .addTag(
+      'Payments',
+      'Endpoints relacionados à integração de pagamentos e gerenciamento de métodos de pagamento',
+    )
+    .addTag(
+      'Health',
+      'Endpoints relacionados à verificação de saúde do sistema',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
