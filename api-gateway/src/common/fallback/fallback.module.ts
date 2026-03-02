@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { CacheFallbackService } from './cache.fallback';
-import { DefaultFallbackService } from './default.fallback';
+import { CacheFallbackService } from './cache.fallback.service';
+import { DefaultFallbackService } from './default.fallback.service';
 
 @Module({
   providers: [CacheFallbackService, DefaultFallbackService],
