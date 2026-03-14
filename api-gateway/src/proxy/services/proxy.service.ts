@@ -65,7 +65,7 @@ export class ProxyService {
           );
         }
 
-        return response;
+        return response.data;
       },
       `proxy-${serviceName}`,
       fallback,
