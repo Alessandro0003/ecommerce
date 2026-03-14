@@ -68,4 +68,42 @@ export class HealthCheckService {
       return serviceHealth;
     }
   }
+
+  async checkAllService(): Promise<ServiceHealth[]> {
+    const services: (keyof typeof serviceConfig)[] = [
+      'users',
+      'products',
+      'checkout',
+      'payments'
+    ];
+
+    // responsavel por observar todas as requisições finalizarem
+    const healthChecks = await Promise.allSettled(
+      services.map((serviceName) => this.checkServiceHealth(serviceName)),
+    );
+
+``    const formatTheResult = healthChecks.map((result, index) => {
+      if (result.status === 'fulfilled') {
+        return result.value;
+      } else {
+        return {
+          name: services[index],
+          url: serviceConfig[services[index]].url,
+          status: HealthStatus.UNHEALTHY as const,
+          responseTime: 0,
+          lastChecked: new Date(),
+          error: result.reason?.message || 'Unknow error',
+        }
+      }
+    });
+    return formatTheResult;
+  }
+
+  getCachedHealth(serviceName: string): ServiceHealth | undefined {
+    return this.healthCache.get(serviceName);
+  }
+
+  getAllCachedHealth(): ServiceHealth[] {
+    return Array.from(this.healthCache.values());
+  } 
 }
