@@ -69,7 +69,7 @@ export class HealthCheckService {
     }
   }
 
-  async checkAllService(): Promise<ServiceHealth[]> {
+  async checkAllServices(): Promise<ServiceHealth[]> {
     const services: (keyof typeof serviceConfig)[] = [
       'users',
       'products',
