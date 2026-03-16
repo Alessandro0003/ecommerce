@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { CustomThrottlerGuard } from './guards/throttler.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { HealthCheckModule } from './common/health/health-check.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { HealthCheckModule } from './common/health/health-check.module';
     MiddlewareModule,
     AuthModule,
     HealthCheckModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
