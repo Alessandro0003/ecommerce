@@ -74,7 +74,7 @@ export class HealthCheckService {
       'users',
       'products',
       'checkout',
-      'payments'
+      'payments',
     ];
 
     // responsavel por observar todas as requisições finalizarem
@@ -82,7 +82,7 @@ export class HealthCheckService {
       services.map((serviceName) => this.checkServiceHealth(serviceName)),
     );
 
-``    const formatTheResult = healthChecks.map((result, index) => {
+    const formatTheResult = healthChecks.map((result, index) => {
       if (result.status === 'fulfilled') {
         return result.value;
       } else {
@@ -93,7 +93,7 @@ export class HealthCheckService {
           responseTime: 0,
           lastChecked: new Date(),
           error: result.reason?.message || 'Unknow error',
-        }
+        };
       }
     });
     return formatTheResult;
@@ -105,5 +105,5 @@ export class HealthCheckService {
 
   getAllCachedHealth(): ServiceHealth[] {
     return Array.from(this.healthCache.values());
-  } 
+  }
 }
