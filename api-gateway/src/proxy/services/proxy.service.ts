@@ -4,6 +4,8 @@ import { firstValueFrom } from 'rxjs';
 import { CircuitBreakerService } from 'src/common/circuit-breaker/circuit-breaker.service';
 import { CacheFallbackService } from 'src/common/fallback/cache.fallback.service';
 import { DefaultFallbackService } from 'src/common/fallback/default.fallback.service';
+import { RetryService } from 'src/common/retry/retry.service';
+import { TimeoutService } from 'src/common/timeout/timeout.service';
 import { serviceConfig } from 'src/config/gateway.config';
 
 interface UserInfo {
@@ -20,6 +22,8 @@ export class ProxyService {
     private readonly circuitBreakerService: CircuitBreakerService,
     private readonly cacheFallback: CacheFallbackService,
     private readonly defaultFallback: DefaultFallbackService,
+    private readonly timeoutService: TimeoutService,
+    private readonly retryService: RetryService,
   ) {}
 
   async proxyRequest(
@@ -39,34 +43,49 @@ export class ProxyService {
 
     const fallback = this.createServiceFallback(serviceName, method, path);
 
+    // Camada 1: Circuit Breaker
     return this.circuitBreakerService.executeWithCircuitBreaker(
       async () => {
-        const enhancedHeaders = {
-          ...headers,
-          'x-user-id': userInfo?.userId,
-          'x-user-email': userInfo?.email,
-          'x-user-role': userInfo?.role,
-        };
+        // Camada 2: Retry
+        return await this.retryService.executeWithExponentialBackoff(
+          async () => {
+            // Camada 3: Timeout
+            return await this.timeoutService.executeWithCustomTimeout(
+              // OPERATION TIMEOUT
+              async () => {
+                const enhancedHeaders = {
+                  ...headers,
+                  'x-user-id': userInfo?.userId,
+                  'x-user-email': userInfo?.email,
+                  'x-user-role': userInfo?.role,
+                };
 
-        const response = await firstValueFrom(
-          this.httpService.request({
-            method: method.toLowerCase(),
-            url,
-            data,
-            headers: enhancedHeaders,
-            timeout: service.timeout,
-          }),
+                const response = await firstValueFrom(
+                  this.httpService.request({
+                    method: method.toLowerCase(),
+                    url,
+                    data,
+                    headers: enhancedHeaders,
+                    timeout: service.timeout,
+                  }),
+                );
+
+                if (method.toLowerCase() === 'get') {
+                  this.cacheFallback.setCachedData(
+                    `${serviceName}:${path}`,
+                    response.data,
+                  );
+                }
+
+                return response.data;
+              },
+              service.timeout,
+            );
+          },
+          3,
         );
-
-        if (method.toLowerCase() === 'get') {
-          this.cacheFallback.setCachedData(
-            `${serviceName}:${path}`,
-            response.data,
-          );
-        }
-
-        return response.data;
       },
+
       `proxy-${serviceName}`,
       fallback,
       {
