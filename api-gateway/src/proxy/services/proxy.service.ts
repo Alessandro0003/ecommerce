@@ -96,29 +96,6 @@ export class ProxyService {
     );
   }
 
-  async getServiceHealth(serviceName: keyof typeof serviceConfig) {
-    try {
-      const service = serviceConfig[serviceName];
-      const response = await firstValueFrom(
-        this.httpService.get(`${service.url}/health`, {
-          timeout: 3000,
-        }),
-      );
-
-      return {
-        status: response.status,
-        data: response.data as unknown,
-      };
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      return {
-        status: 'unhealthy',
-        error: errorMessage,
-      };
-    }
-  }
-
   private createServiceFallback(
     serviceName: string,
     method: string,
