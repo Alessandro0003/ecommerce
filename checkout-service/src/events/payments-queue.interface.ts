@@ -10,4 +10,5 @@ export interface PaymentsOrderMessage {
   paymentMethod: string;
   description?: string;
   createdAt?: Date;
+  metadata?: Record<string, any>;
 }
