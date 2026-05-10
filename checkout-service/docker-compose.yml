@@ -1,0 +1,21 @@
+services:
+  checkout_db:
+    image: postgres:15
+    container_name: checkout_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: checkout_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - checkout_db_data:/var/lib/postgresql/data
+    networks:
+      - checkout-network
+
+volumes:
+  checkout_db_data:
+
+networks:
+  checkout-network:
+    driver: bridge
