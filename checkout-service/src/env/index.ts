@@ -8,7 +8,7 @@ config({ path: resolve(__dirname, '../../.env') });
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']),
   PORT: z.coerce.number().default(3003),
-  DATEBASE_URL: z.string().url(),
+  DATABASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(1),
   JWT_EXPIRES_IN: z.string().min(1),
   USERS_SERVICE_URL: z.string().url(),
