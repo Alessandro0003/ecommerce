@@ -17,6 +17,8 @@ const envSchema = z.object({
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_QUEUE_PAYMENTS: z.string().min(1),
   RABBITMQ_EXCHANGE: z.string().min(1),
+  PAYMENT_GATEWAY_URL: z.string().url(),
+  PAYMENT_GATEWAY_API_KEY: z.string().min(1),
 });
 
 export const env = envSchema.parse(process.env);
