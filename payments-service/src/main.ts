@@ -14,6 +14,6 @@ async function bootstrap() {
   );
   await app.listen(env.PORT);
 
-  console.log(`🚀 Payments Service is running in http://localhost:${env.PORT}`);
+  console.log(`💳 Payments Service is running in http://localhost:${env.PORT}`);
 }
 bootstrap();
