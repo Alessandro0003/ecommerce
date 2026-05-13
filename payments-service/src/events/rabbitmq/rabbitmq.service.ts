@@ -132,7 +132,7 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
   ) {
     try {
       if (!this.channel) {
-        this.logger.warn(
+        this.logger.error(
           '⚠️ RabbitMQ channel is not available, cannot subscribe to queue',
         );
         return;
