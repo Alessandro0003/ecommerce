@@ -1,12 +1,16 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PaymentQueueService } from '../payment-queue/payment-queue.service';
 import { PaymentsOrderMessage } from '../payment-queue.interface';
+import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
 
 @Injectable()
 export class PaymentConsumerService implements OnModuleInit {
   private readonly logger = new Logger(PaymentConsumerService.name);
 
-  constructor(private readonly paymentQueueService: PaymentQueueService) {}
+  constructor(
+    private readonly paymentQueueService: PaymentQueueService,
+    private readonly rabbitmqService: RabbitmqService,
+  ) {}
 
   async onModuleInit() {
     this.logger.log('🚀 Starting Payment Consumer Service');
@@ -16,6 +20,15 @@ export class PaymentConsumerService implements OnModuleInit {
   async startConsuming() {
     try {
       this.logger.log('👂Starting to consume payment orders from queue');
+
+      const isConnected = await this.rabbitmqService.waitForConnection();
+
+      if (!isConnected) {
+        this.logger.error(
+          '❌ Could not connect to RabbitMQ after multiple attmepts',
+        );
+        return;
+      }
 
       // Registra callback pra processar cada mensagem
       // O bind(this) garante que o 'this' dentro do callback seja esta class

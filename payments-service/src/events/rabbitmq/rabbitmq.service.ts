@@ -24,12 +24,28 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
     await this.disconnect();
   }
 
+  async waitForConnection(maxAttempts = 10, delayMs = 500): Promise<boolean> {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      if (this.channel) {
+        return true;
+      }
+
+      this.logger.log(
+        `⌛ Waiting for RabbitMQ connection... (attempt ${attempt}/ ${maxAttempts})`,
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+
+    return false;
+  }
+
   private async connect() {
     try {
       this.connection = await amqp.connect(env.RABBITMQ_URL);
       this.channel = await this.connection.createChannel();
 
-      this.logger.log('✅ Connected to RabbitMQ');
+      this.logger.log('✅ Connected to RabbitMQ successfully');
 
       // Events listeners para monitorar a conexão
       this.connection.on('error', (err) => {
