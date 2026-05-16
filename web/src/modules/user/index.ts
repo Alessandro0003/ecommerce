@@ -1,2 +1,10 @@
 export { userSchema } from "./schemas";
 export type { User } from "./schemas";
+export { ProfileForm } from "./components/profile-form";
+export type { ProfileFormValues } from "./components/profile-form/schema";
+export { PasswordForm } from "./components/password-form";
+export type { PasswordFormValues } from "./components/password-form/schema";
+export { UserRow } from "./components/user-row";
+export { ProfileContainer } from "./containers/profile-container";
+export { PasswordContainer } from "./containers/password-container";
+export { ListUserContainer } from "./containers/list-user-container";

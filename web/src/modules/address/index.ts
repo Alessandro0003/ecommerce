@@ -1,2 +1,10 @@
 export { addressSchema } from "./schemas";
 export type { Address } from "./schemas";
+export { AddressForm } from "./components/address-form";
+export type { AddressFormValues } from "./components/address-form/schema";
+export { AddressCard } from "./components/address-card";
+export { AddressList } from "./components/address-list";
+export { CreateAddressContainer } from "./containers/create-address-container";
+export { UpdateAddressContainer } from "./containers/update-address-container";
+export { DeleteAddressContainer } from "./containers/delete-address-container";
+export { ListAddressContainer } from "./containers/list-address-container";
