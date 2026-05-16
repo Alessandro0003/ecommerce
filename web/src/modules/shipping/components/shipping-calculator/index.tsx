@@ -11,6 +11,11 @@ function optionKey(o: ShippingOption) {
   return `${o.carrier}-${o.service}`;
 }
 
+function formatZip(raw: string) {
+  const d = raw.replace(/\D/g, "").slice(0, 8);
+  return d.length > 5 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
+}
+
 export function ShippingCalculator({
   onCalculate,
   options,
@@ -18,15 +23,15 @@ export function ShippingCalculator({
   isError,
   selectedOption,
   onSelect,
+  initialZipCode,
 }: ShippingCalculatorProps) {
-  const [zipCode, setZipCode] = useState("");
+  const [zipCode, setZipCode] = useState(() =>
+    initialZipCode ? formatZip(initialZipCode) : ""
+  );
   const isZipComplete = zipCode.replace(/\D/g, "").length === 8;
 
   function handleZipChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const digits = e.target.value.replace(/\D/g, "").slice(0, 8);
-    const masked =
-      digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
-    setZipCode(masked);
+    setZipCode(formatZip(e.target.value));
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -51,11 +56,7 @@ export function ShippingCalculator({
           size="sm"
           disabled={!isZipComplete || isLoading}
         >
-          {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            "Calcular"
-          )}
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Calcular"}
         </Button>
       </form>
 
@@ -76,9 +77,7 @@ export function ShippingCalculator({
         >
           {options.map((option) => {
             const key = optionKey(option);
-            const isChecked = selectedOption
-              ? optionKey(selectedOption) === key
-              : false;
+            const isChecked = selectedOption ? optionKey(selectedOption) === key : false;
             return (
               <label
                 key={key}

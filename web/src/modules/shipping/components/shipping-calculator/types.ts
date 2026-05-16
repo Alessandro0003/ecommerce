@@ -7,4 +7,5 @@ export type ShippingCalculatorProps = {
   isError?: boolean;
   selectedOption?: ShippingOption;
   onSelect?: (option: ShippingOption) => void;
+  initialZipCode?: string;
 };
