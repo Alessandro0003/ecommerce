@@ -1,13 +1,22 @@
 import { ShoppingCart, Truck } from "lucide-react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";
+import { useCart } from "@/modules/cart";
 import type { ProductCardProps } from "./types";
 
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
+  const { addItem } = useCart();
   const effectivePrice = product.promotionalPrice ?? product.price;
   const hasFreeShipping = effectivePrice > 99;
+
+  function handleAddToCart() {
+    addItem(product);
+    toast.success(`"${product.name}" adicionado ao carrinho!`);
+    onAddToCart?.(product);
+  }
 
   return (
     <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-md">
@@ -61,7 +70,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
         <Button
           className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
           size="sm"
-          onClick={() => onAddToCart?.(product)}
+          onClick={handleAddToCart}
         >
           <ShoppingCart className="mr-2 h-4 w-4" />
           Adicionar ao carrinho

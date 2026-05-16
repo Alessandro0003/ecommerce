@@ -22,19 +22,21 @@ import AdminProductEditPage from "@/pages/admin/product-edit";
 import AdminPromotionsPage from "@/pages/admin/promotions";
 
 export const router = createBrowserRouter([
+  // Auth — sem PublicLayout (full-screen próprio)
+  { path: "/login", element: <LoginPage /> },
+  { path: "/registro", element: <RegisterPage /> },
+
   {
     element: <PublicLayout />,
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/produto/:id", element: <ProductDetailsPage /> },
-      { path: "/login", element: <LoginPage /> },
-      { path: "/registro", element: <RegisterPage /> },
+      { path: "/carrinho", element: <CartPage /> },
 
       {
         element: <ProtectedRoute />,
         children: [
           { path: "/perfil", element: <ProfilePage /> },
-          { path: "/carrinho", element: <CartPage /> },
           { path: "/checkout", element: <CheckoutPage /> },
           { path: "/pedido/:id/aguardando", element: <OrderPendingPage /> },
           { path: "/pedidos", element: <OrdersPage /> },
@@ -42,6 +44,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
   {
     element: <ProtectedRoute adminOnly />,
     children: [
@@ -51,7 +54,10 @@ export const router = createBrowserRouter([
           { path: "/admin", element: <AdminDashboardPage /> },
           { path: "/admin/produtos", element: <AdminProductsListPage /> },
           { path: "/admin/produtos/novo", element: <AdminProductCreatePage /> },
-          { path: "/admin/produtos/:id/editar", element: <AdminProductEditPage /> },
+          {
+            path: "/admin/produtos/:id/editar",
+            element: <AdminProductEditPage />,
+          },
           { path: "/admin/promocoes", element: <AdminPromotionsPage /> },
         ],
       },

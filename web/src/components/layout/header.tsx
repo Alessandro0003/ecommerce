@@ -1,5 +1,6 @@
 import { PawPrint, ShoppingCart, Search } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useCart } from "@/modules/cart";
 import { ThemeToggle } from "./theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ function getInitials(name: string) {
 
 export function Header() {
   const { user, logout } = useAuth();
+  const { totalItems } = useCart();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -48,11 +50,15 @@ export function Header() {
           <ThemeToggle />
 
           {/* Cart */}
-          <Button variant="ghost" size="icon" className="relative" aria-label="Carrinho">
-            <ShoppingCart className="h-5 w-5" />
-            <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs leading-none">
-              0
-            </Badge>
+          <Button variant="ghost" size="icon" className="relative" aria-label="Carrinho" asChild>
+            <a href="/carrinho">
+              <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs leading-none">
+                  {totalItems}
+                </Badge>
+              )}
+            </a>
           </Button>
 
           {/* Auth */}

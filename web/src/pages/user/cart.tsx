@@ -1,8 +1,10 @@
+import { CartContainer } from "@/modules/cart";
+
 export default function CartPage() {
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold">Página: cart</h1>
-      <p className="text-muted-foreground">Placeholder — Etapa C</p>
+    <div>
+      <h1 className="mb-6 text-2xl font-bold">Meu carrinho</h1>
+      <CartContainer />
     </div>
   );
 }
