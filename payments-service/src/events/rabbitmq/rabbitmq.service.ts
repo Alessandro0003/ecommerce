@@ -156,17 +156,36 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
 
       await this.channel.assertExchange(exchange, 'topic', { durable: true });
 
+      // Config DLQ (dead letter queue)
+      const dlxExchange = `${exchange}.dlx`;
+      await this.channel.assertExchange(dlxExchange, 'topic', {
+        durable: true,
+      });
+
+      const dlqName = `${queueName}.dlq`;
+      await this.channel.assertQueue(dlqName, {
+        durable: true,
+        arguments: {
+          'x-message-ttl': 604800000, // 7 dias para analise
+        },
+      });
+
+      const routineKeyDlq = `${routineKey}.dead`;
+      await this.channel.bindQueue(dlqName, dlxExchange, routineKeyDlq);
+
       const queue = await this.channel.assertQueue(queueName, {
         durable: true,
         arguments: {
           'x-message-ttl': 86400000, // Define o tempo de vida das mensagens na fila (24 horas)
           'x-max-length': 10000, // Limita o número máximo de mensagens na fila
+          'x-dead-letter-exchange': dlxExchange,
+          'x-dead-letter-routine-key': routineKeyDlq,
         },
       });
 
       await this.channel.bindQueue(queue.queue, exchange, routineKey);
-
       await this.channel.prefetch(1); // Processa uma mensagem por vez para garantir a ordem
+
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       await this.channel.consume(queue.queue, async (msg) => {
         if (msg) {
@@ -190,7 +209,8 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
               '❌ Error processing message from RabbitMQ',
               error instanceof Error ? error.message : String(error),
             );
-            this.channel?.nack(msg, false, false); // !TODO: Dead Letter Queue
+            this.channel?.nack(msg, false, false);
+            this.logger.warn(`⚠️ Message sent to DLQ: ${dlqName}`);
           }
         }
       });
