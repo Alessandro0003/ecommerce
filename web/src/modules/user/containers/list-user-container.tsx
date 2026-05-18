@@ -1,4 +1,3 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -7,6 +6,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { UserRow } from "../components/user-row";
+import { UserTableSkeleton } from "../components/user-table-skeleton";
 import type { User } from "../schemas";
 
 type ListUserContainerProps = {
@@ -17,16 +17,6 @@ type ListUserContainerProps = {
   onDelete?: (id: string) => void;
 };
 
-function TableSkeleton() {
-  return (
-    <div className="space-y-2">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Skeleton key={i} className="h-12 w-full rounded-md" />
-      ))}
-    </div>
-  );
-}
-
 export function ListUserContainer({
   users,
   isLoading,
@@ -34,7 +24,7 @@ export function ListUserContainer({
   onEdit,
   onDelete,
 }: ListUserContainerProps) {
-  if (isLoading) return <TableSkeleton />;
+  if (isLoading) return <UserTableSkeleton />;
   if (isError)
     return (
       <p className="py-8 text-center text-sm text-destructive">

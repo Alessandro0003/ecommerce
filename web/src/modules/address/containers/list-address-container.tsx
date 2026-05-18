@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { AddressList } from "../components/address-list";
+import { AddressListSkeleton } from "../components/address-list-skeleton";
 import { CreateAddressContainer } from "./create-address-container";
 import { UpdateAddressContainer } from "./update-address-container";
 import { DeleteAddressContainer } from "./delete-address-container";
@@ -9,6 +10,7 @@ import type { Address } from "../schemas";
 
 type ListAddressContainerProps = {
   addresses: Address[];
+  isLoading?: boolean;
   onCreate: (values: AddressFormValues) => void;
   onUpdate: (id: string, values: AddressFormValues) => void;
   onDelete: (id: string) => void;
@@ -16,6 +18,7 @@ type ListAddressContainerProps = {
 
 export function ListAddressContainer({
   addresses,
+  isLoading,
   onCreate,
   onUpdate,
   onDelete,
@@ -23,6 +26,8 @@ export function ListAddressContainer({
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [deletingAddress, setDeletingAddress] = useState<Address | null>(null);
+
+  if (isLoading) return <AddressListSkeleton />;
 
   function handleEditRequest(id: string) {
     setEditingAddress(addresses.find((a) => a.id === id) ?? null);

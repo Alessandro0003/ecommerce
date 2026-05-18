@@ -1,4 +1,3 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -8,6 +7,8 @@ import {
 } from "@/components/ui/table";
 import { ProductGrid } from "../components/grid";
 import { ProductTableRow } from "../components/table-row";
+import { ProductGridSkeleton } from "../components/skeletons/product-grid-skeleton";
+import { ProductTableSkeleton } from "../components/skeletons/product-table-skeleton";
 import type { Product } from "../schemas";
 
 type ListProductContainerProps = {
@@ -19,16 +20,6 @@ type ListProductContainerProps = {
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
 };
-
-function GridSkeleton() {
-  return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
-      {Array.from({ length: 10 }).map((_, i) => (
-        <Skeleton key={i} className="aspect-[3/4] rounded-lg" />
-      ))}
-    </div>
-  );
-}
 
 function EmptyState() {
   return (
@@ -63,7 +54,8 @@ export function ListProductContainer({
   onEdit,
   onDelete,
 }: ListProductContainerProps) {
-  if (isLoading) return <GridSkeleton />;
+  if (isLoading)
+    return mode === "table" ? <ProductTableSkeleton /> : <ProductGridSkeleton />;
   if (isError) return <ErrorState />;
   if (products.length === 0) return <EmptyState />;
 

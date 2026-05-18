@@ -13,6 +13,7 @@ import { mockProducts, mockPromotions } from "@/mocks";
 import { ListProductContainer, ProductFilter } from "@/modules/product";
 import type { ProductFilterValues } from "@/modules/product";
 import { ActivePromotionsContainer } from "@/modules/promotion";
+import { useMockLoading } from "@/hooks/use-mock-loading";
 
 const DEFAULT_FILTER: ProductFilterValues = {
   categories: [],
@@ -31,6 +32,8 @@ export default function HomePage() {
     const inPrice = effectivePrice <= filterValues.priceRange[1];
     return inCategory && inPrice;
   });
+
+  const isLoading = useMockLoading(1500);
 
   return (
     <div className="flex gap-6">
@@ -66,9 +69,13 @@ export default function HomePage() {
           </Sheet>
         </div>
 
-        <ActivePromotionsContainer promotions={mockPromotions} />
+        <ActivePromotionsContainer promotions={mockPromotions} isLoading={isLoading} />
 
-        <ListProductContainer products={filteredProducts} mode="grid" />
+        <ListProductContainer
+          products={filteredProducts}
+          mode="grid"
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );

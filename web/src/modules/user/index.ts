@@ -5,6 +5,7 @@ export type { ProfileFormValues } from "./components/profile-form/schema";
 export { PasswordForm } from "./components/password-form";
 export type { PasswordFormValues } from "./components/password-form/schema";
 export { UserRow } from "./components/user-row";
+export { UserTableSkeleton } from "./components/user-table-skeleton";
 export { ProfileContainer } from "./containers/profile-container";
 export { PasswordContainer } from "./containers/password-container";
 export { ListUserContainer } from "./containers/list-user-container";
