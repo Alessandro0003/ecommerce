@@ -9,9 +9,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { mockProducts } from "@/mocks";
+import { mockProducts, mockPromotions } from "@/mocks";
 import { ListProductContainer, ProductFilter } from "@/modules/product";
 import type { ProductFilterValues } from "@/modules/product";
+import { ActivePromotionsContainer } from "@/modules/promotion";
 
 const DEFAULT_FILTER: ProductFilterValues = {
   categories: [],
@@ -65,7 +66,7 @@ export default function HomePage() {
           </Sheet>
         </div>
 
-        {/* TODO: <ActivePromotionsContainer /> */}
+        <ActivePromotionsContainer promotions={mockPromotions} />
 
         <ListProductContainer products={filteredProducts} mode="grid" />
       </div>
