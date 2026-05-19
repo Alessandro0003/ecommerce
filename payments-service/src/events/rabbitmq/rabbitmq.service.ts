@@ -143,20 +143,18 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
   async subscribeToQueue(
     queueName: string,
     exchange: string,
-    routineKey: string,
+    routingKey: string,
     callback: (message: unknown) => Promise<void>,
-  ) {
+  ): Promise<void> {
     try {
       if (!this.channel) {
-        this.logger.error(
-          '⚠️ RabbitMQ channel is not available, cannot subscribe to queue',
-        );
-        return;
+        throw new Error('RabbitMQ channel not available');
       }
 
-      await this.channel.assertExchange(exchange, 'topic', { durable: true });
+      await this.channel.assertExchange(exchange, 'topic', {
+        durable: true,
+      });
 
-      // Config DLQ (dead letter queue)
       const dlxExchange = `${exchange}.dlx`;
       await this.channel.assertExchange(dlxExchange, 'topic', {
         durable: true,
@@ -166,59 +164,54 @@ export class RabbitmqService implements OnModuleInit, OnModuleDestroy {
       await this.channel.assertQueue(dlqName, {
         durable: true,
         arguments: {
-          'x-message-ttl': 604800000, // 7 dias para analise
+          'x-message-ttl': 604800000, // 7 dias para análise
         },
       });
 
-      const routineKeyDlq = `${routineKey}.dead`;
-      await this.channel.bindQueue(dlqName, dlxExchange, routineKeyDlq);
+      const routingKeyDlq = `${routingKey}.dlq`;
+      await this.channel.bindQueue(dlqName, dlxExchange, routingKeyDlq);
 
       const queue = await this.channel.assertQueue(queueName, {
         durable: true,
         arguments: {
-          'x-message-ttl': 86400000, // Define o tempo de vida das mensagens na fila (24 horas)
-          'x-max-length': 10000, // Limita o número máximo de mensagens na fila
+          'x-message-ttl': 86400000,
+          'x-max-length': 10000,
           'x-dead-letter-exchange': dlxExchange,
-          'x-dead-letter-routine-key': routineKeyDlq,
+          'x-dead-letter-routing-key': routingKeyDlq,
         },
       });
 
-      await this.channel.bindQueue(queue.queue, exchange, routineKey);
-      await this.channel.prefetch(1); // Processa uma mensagem por vez para garantir a ordem
+      await this.channel.bindQueue(queue.queue, exchange, routingKey);
+
+      await this.channel.prefetch(1);
 
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       await this.channel.consume(queue.queue, async (msg) => {
         if (msg) {
           try {
-            const messageContent: unknown = JSON.parse(msg.content.toString());
-            this.logger.log(
-              `✅ Received message from RabbitMQ from queue ${queueName}`,
-            );
-            this.logger.debug(
-              `Message content: ${JSON.stringify(messageContent)}`,
-            );
-            await callback(messageContent);
+            const message: unknown = JSON.parse(msg.content.toString());
+            this.logger.log(`📨 Message received from queue: ${queueName}`);
+            this.logger.debug(`Message content: ${JSON.stringify(message)}`);
+            await callback(message);
 
-            this.channel?.ack(msg); // Confirma que a mensagem foi processada com sucesso
+            this.channel?.ack(msg);
 
             this.logger.log(
-              `✅ Message processed successfully from queue: ${queueName}`,
+              `✅ Message processed succesfully from queue: ${queueName}`,
             );
           } catch (error) {
-            this.logger.error(
-              '❌ Error processing message from RabbitMQ',
-              error instanceof Error ? error.message : String(error),
-            );
+            this.logger.error(`❌ Error processing message:`, error);
             this.channel?.nack(msg, false, false);
             this.logger.warn(`⚠️ Message sent to DLQ: ${dlqName}`);
           }
         }
       });
-    } catch (error) {
-      this.logger.error(
-        '❌ Error subscribing to RabbitMQ queue',
-        error instanceof Error ? error.message : String(error),
+
+      this.logger.log(
+        `✅ Subscribed to queue: ${queueName} with routing key: ${routingKey}`,
       );
+    } catch (error) {
+      this.logger.error(`❌ Error subscribing to queue ${queueName}:`, error);
     }
   }
 }
