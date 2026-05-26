@@ -1,4 +1,5 @@
 import { PawPrint, ShoppingCart, Search } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/modules/cart";
 import { ThemeToggle } from "./theme-toggle";
@@ -25,7 +26,12 @@ function getInitials(name: string) {
 }
 
 export function Header() {
-  const { user, logout } = useAuth();
+  const { user, logout: authLogout } = useAuth();
+
+  function logout() {
+    authLogout();
+    toast("Você saiu da sua conta.");
+  }
   const { totalItems } = useCart();
 
   return (
@@ -37,11 +43,11 @@ export function Header() {
           PetShop
         </a>
 
-        {/* Search */}
-        <div className="flex-1 max-w-md mx-auto">
+        {/* Search — hidden on mobile */}
+        <div className="hidden flex-1 max-w-md mx-auto sm:block">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input className="pl-9" placeholder="Buscar produtos..." />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <Input className="pl-9" placeholder="Buscar produtos..." aria-label="Buscar produtos" />
           </div>
         </div>
 
@@ -65,7 +71,7 @@ export function Header() {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
+                <Button variant="ghost" size="icon" className="rounded-full" aria-label={`Menu de ${user.name}`}>
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="text-xs bg-primary text-primary-foreground">
                       {getInitials(user.name)}

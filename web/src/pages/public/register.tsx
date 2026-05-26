@@ -2,9 +2,11 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { RegisterContainer } from "@/modules/auth";
 
 export default function RegisterPage() {
+  useDocumentTitle("Criar conta");
   const { user } = useAuth();
   const navigate = useNavigate();
   const wasLoggedOut = useRef(user === null);

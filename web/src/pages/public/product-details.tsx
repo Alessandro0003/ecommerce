@@ -1,29 +1,28 @@
-import { ChevronLeft, Truck } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { ChevronLeft, SearchX, Truck } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/layout/empty-state";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { mockProducts } from "@/mocks";
 import { ProductDetailContainer } from "@/modules/product";
 import { ShippingCalculatorContainer } from "@/modules/shipping";
 
 export default function ProductDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const product = mockProducts.find((p) => p.id === id) ?? null;
+  useDocumentTitle(product?.name ?? "Produto");
 
   if (!product) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <h1 className="text-2xl font-bold">Produto não encontrado</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          O produto que você está procurando não existe ou foi removido.
-        </p>
-        <Button asChild className="mt-6">
-          <Link to="/">
-            <ChevronLeft className="mr-2 h-4 w-4" />
-            Voltar para a loja
-          </Link>
-        </Button>
-      </div>
+      <EmptyState
+        icon={SearchX}
+        title="Produto não encontrado"
+        description="O produto que você procura não existe ou foi removido."
+        actionLabel="Voltar para a loja"
+        onAction={() => navigate("/")}
+      />
     );
   }
 
@@ -31,7 +30,7 @@ export default function ProductDetailsPage() {
     <div>
       <Button asChild variant="ghost" size="sm" className="mb-6 -ml-2">
         <Link to="/">
-          <ChevronLeft className="mr-1 h-4 w-4" />
+          <ChevronLeft className="mr-1 h-4 w-4" aria-hidden="true" />
           Voltar
         </Link>
       </Button>

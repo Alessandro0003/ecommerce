@@ -1,3 +1,4 @@
+import { Users } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -5,6 +6,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { EmptyState } from "@/components/layout/empty-state";
+import { ErrorState } from "@/components/layout/error-state";
 import { UserRow } from "../components/user-row";
 import { UserTableSkeleton } from "../components/user-table-skeleton";
 import type { User } from "../schemas";
@@ -26,16 +29,14 @@ export function ListUserContainer({
 }: ListUserContainerProps) {
   if (isLoading) return <UserTableSkeleton />;
   if (isError)
-    return (
-      <p className="py-8 text-center text-sm text-destructive">
-        Erro ao carregar usuários.
-      </p>
-    );
+    return <ErrorState message="Não foi possível carregar os usuários." />;
   if (users.length === 0)
     return (
-      <p className="py-8 text-center text-sm text-muted-foreground">
-        Nenhum usuário encontrado.
-      </p>
+      <EmptyState
+        icon={Users}
+        title="Nenhum usuário encontrado"
+        description="Os usuários cadastrados aparecerão aqui."
+      />
     );
 
   return (

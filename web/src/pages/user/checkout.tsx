@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/modules/cart";
 import { CheckoutContainer } from "@/modules/checkout";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { mockAddresses } from "@/mocks";
 
 export default function CheckoutPage() {
+  useDocumentTitle("Finalizar pedido");
   const { selectedItems } = useCart();
   const navigate = useNavigate();
 

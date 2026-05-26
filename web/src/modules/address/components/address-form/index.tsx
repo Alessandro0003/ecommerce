@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ const STATES = [
 
 export function AddressForm({ defaultValues, onSubmit, isSubmitting }: AddressFormProps) {
   const form = useForm<AddressFormValues>({
-    resolver: zodResolver(addressFormSchema),
+    resolver: zodResolver(addressFormSchema) as Resolver<AddressFormValues>,
     defaultValues: {
       zipCode: defaultValues?.zipCode ? formatCEP(defaultValues.zipCode) : "",
       street: defaultValues?.street ?? "",

@@ -8,6 +8,7 @@ import HomePage from "@/pages/public/home";
 import ProductDetailsPage from "@/pages/public/product-details";
 import LoginPage from "@/pages/public/login";
 import RegisterPage from "@/pages/public/register";
+import NotFoundPage from "@/pages/public/not-found";
 
 import ProfilePage from "@/pages/user/profile";
 import CartPage from "@/pages/user/cart";
@@ -63,4 +64,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
+  { path: "*", element: <NotFoundPage /> },
 ]);

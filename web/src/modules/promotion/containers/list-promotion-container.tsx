@@ -1,4 +1,5 @@
 import { Tag } from "lucide-react";
+import { EmptyState } from "@/components/layout/empty-state";
 import { PromotionCard } from "../components/promotion-card";
 import type { Promotion } from "../schemas";
 
@@ -13,21 +14,14 @@ export function ListPromotionContainer({
   onEdit,
   onDelete,
 }: ListPromotionContainerProps) {
-  if (promotions.length === 0) {
+  if (promotions.length === 0)
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-        <div className="rounded-full bg-muted p-6">
-          <Tag className="h-10 w-10 text-muted-foreground" />
-        </div>
-        <div>
-          <p className="font-medium">Nenhuma promoção encontrada</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Crie uma nova promoção para aparecer aqui.
-          </p>
-        </div>
-      </div>
+      <EmptyState
+        icon={Tag}
+        title="Nenhuma promoção encontrada"
+        description="Crie uma nova promoção para que ela apareça aqui."
+      />
     );
-  }
 
   return (
     <div className="space-y-3">

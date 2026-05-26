@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, PawPrint } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -47,7 +47,7 @@ export function RegisterForm({ onSubmit, isSubmitting }: RegisterFormProps) {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerFormSchema),
+    resolver: zodResolver(registerFormSchema) as Resolver<RegisterFormValues>,
     defaultValues: {
       name: "",
       email: "",
@@ -197,12 +197,12 @@ export function RegisterForm({ onSubmit, isSubmitting }: RegisterFormProps) {
                           type="button"
                           onClick={() => setShowPassword((v) => !v)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                          tabIndex={-1}
+                          aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
                         >
                           {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
+                            <EyeOff className="h-4 w-4" aria-hidden="true" />
                           ) : (
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-4 w-4" aria-hidden="true" />
                           )}
                         </button>
                       </div>
@@ -232,12 +232,12 @@ export function RegisterForm({ onSubmit, isSubmitting }: RegisterFormProps) {
                           type="button"
                           onClick={() => setShowConfirm((v) => !v)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                          tabIndex={-1}
+                          aria-label={showConfirm ? "Ocultar confirmação de senha" : "Mostrar confirmação de senha"}
                         >
                           {showConfirm ? (
-                            <EyeOff className="h-4 w-4" />
+                            <EyeOff className="h-4 w-4" aria-hidden="true" />
                           ) : (
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-4 w-4" aria-hidden="true" />
                           )}
                         </button>
                       </div>

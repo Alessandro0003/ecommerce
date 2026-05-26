@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Plus, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +20,7 @@ import { ListProductContainer } from "@/modules/product";
 import type { Product } from "@/modules/product";
 
 export default function AdminProductsListPage() {
+  useDocumentTitle("Produtos — Admin");
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
@@ -32,7 +35,7 @@ export default function AdminProductsListPage() {
   }
 
   function handleDeleteConfirm() {
-    console.log("delete product:", deletingProduct?.id);
+    toast.success(`Produto "${deletingProduct?.name}" removido.`);
     setDeletingProduct(null);
   }
 

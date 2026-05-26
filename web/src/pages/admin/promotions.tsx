@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { mockPromotions } from "@/mocks";
 import {
   CreatePromotionContainer,
@@ -10,6 +11,7 @@ import {
 import type { Promotion, PromotionFormValues } from "@/modules/promotion";
 
 export default function AdminPromotionsPage() {
+  useDocumentTitle("Promoções — Admin");
   const [promotions, setPromotions] = useState<Promotion[]>(mockPromotions);
   const [editingPromotion, setEditingPromotion] = useState<Promotion | null>(null);
   const [deletingPromotion, setDeletingPromotion] = useState<Promotion | null>(null);

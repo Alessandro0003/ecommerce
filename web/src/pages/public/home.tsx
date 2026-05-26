@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -21,6 +22,7 @@ const DEFAULT_FILTER: ProductFilterValues = {
 };
 
 export default function HomePage() {
+  useDocumentTitle("Produtos");
   const [filterValues, setFilterValues] =
     useState<ProductFilterValues>(DEFAULT_FILTER);
 

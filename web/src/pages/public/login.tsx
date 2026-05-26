@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { LoginContainer } from "@/modules/auth";
 
 type LocationState = { from?: { pathname: string } };
 
 export default function LoginPage() {
+  useDocumentTitle("Entrar");
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();

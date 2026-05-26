@@ -8,7 +8,7 @@ export const promotionFormSchema = z
     productId: z.string().optional(),
     category: z.enum(["DOG", "CAT", "BIRD", "FISH", "OTHER"]).optional(),
     discountType: z.enum(["PERCENT", "FIXED"]),
-    discountValue: z.number({ invalid_type_error: "Informe um valor numérico" }),
+    discountValue: z.number({ error: "Informe um valor numérico" }),
     startsAt: z.string().min(1, "Informe a data de início"),
     endsAt: z.string().min(1, "Informe a data de fim"),
     bannerImage: z.string().url("URL inválida").optional().or(z.literal("")),
@@ -25,13 +25,10 @@ export const promotionFormSchema = z
       }
       return data.discountValue > 0;
     },
-    (data) => ({
-      message:
-        data.discountType === "PERCENT"
-          ? "Desconto em % deve ser entre 1 e 100"
-          : "Valor deve ser positivo",
+    {
+      message: "Valor de desconto inválido para o tipo selecionado",
       path: ["discountValue"],
-    }),
+    },
   );
 
 export type PromotionFormValues = z.infer<typeof promotionFormSchema>;

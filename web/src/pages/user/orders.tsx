@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ListOrderContainer } from "@/modules/order";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { mockOrders } from "@/mocks";
 import type { OrderStatus } from "@/modules/order";
 
@@ -16,6 +17,7 @@ const tabs: { value: TabValue; label: string }[] = [
 ];
 
 export default function OrdersPage() {
+  useDocumentTitle("Meus pedidos");
   const [activeTab, setActiveTab] = useState<TabValue>("all");
 
   const filteredOrders =

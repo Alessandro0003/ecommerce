@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { OrderPendingContainer } from "@/modules/order";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { mockOrders } from "@/mocks";
 import type { Order } from "@/modules/order";
 
@@ -26,6 +27,7 @@ const FALLBACK_ORDER: Order = {
 };
 
 export default function OrderPendingPage() {
+  useDocumentTitle("Processando pedido");
   const { id } = useParams<{ id: string }>();
   const order = mockOrders.find((o) => o.id === id) ?? FALLBACK_ORDER;
 

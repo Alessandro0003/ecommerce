@@ -1,4 +1,5 @@
 import { DollarSign, Package, ShoppingBag, Tag, TrendingUp } from "lucide-react";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderStatusBadge } from "@/modules/order";
 import { mockOrders, mockProducts, mockPromotions } from "@/mocks";
@@ -69,6 +70,7 @@ function SummaryCard({ title, value, icon, trend }: SummaryCardProps) {
 }
 
 export default function AdminDashboardPage() {
+  useDocumentTitle("Dashboard");
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold">Dashboard</h1>

@@ -1,3 +1,4 @@
+import { Shield, User, UserX } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,21 +26,31 @@ export function RoleSwitcher() {
     <div className="fixed bottom-4 right-4 z-50">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2 shadow-lg">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 shadow-lg"
+            title="Alternador de role (apenas em desenvolvimento)"
+          >
             Role: {getRoleBadge(user?.role ?? null)}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Trocar role (dev)</DropdownMenuLabel>
+          <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
+            🛠 Dev only — trocar role
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={logout}>
-            <span>Guest (deslogado)</span>
+            <UserX className="mr-2 h-4 w-4" />
+            Guest (deslogado)
           </DropdownMenuItem>
           <DropdownMenuItem onClick={login}>
-            <span>Usuário comum</span>
+            <User className="mr-2 h-4 w-4" />
+            Usuário comum
           </DropdownMenuItem>
           <DropdownMenuItem onClick={loginAsAdmin}>
-            <span>Admin</span>
+            <Shield className="mr-2 h-4 w-4" />
+            Admin
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { LoginForm } from "../components/login-form";
 import type { LoginFormValues } from "../components/login-form/schema";
@@ -17,8 +18,10 @@ export function LoginContainer({ onSubmit, isSubmitting }: LoginContainerProps) 
     }
     if (values.email.includes("admin")) {
       loginAsAdmin();
+      toast.success("Bem-vindo, Admin Principal!");
     } else {
       login();
+      toast.success("Bem-vindo, João da Silva!");
     }
   }
 

@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ import type { ProfileFormProps } from "./types";
 
 export function ProfileForm({ user, onSubmit, isSubmitting }: ProfileFormProps) {
   const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+    resolver: zodResolver(profileFormSchema) as Resolver<ProfileFormValues>,
     defaultValues: {
       name: user.name,
       email: user.email,

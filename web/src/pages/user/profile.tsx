@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { mockAddresses } from "@/mocks";
 import { ProfileContainer, PasswordContainer } from "@/modules/user";
 import { ListAddressContainer } from "@/modules/address";
@@ -19,6 +20,7 @@ function getInitials(name: string) {
 }
 
 export default function ProfilePage() {
+  useDocumentTitle("Meu perfil");
   const { user } = useAuth();
   const [addresses, setAddresses] = useState<Address[]>(mockAddresses);
 
@@ -69,11 +71,13 @@ export default function ProfilePage() {
       </div>
 
       <Tabs defaultValue="profile">
-        <TabsList className="mb-6">
-          <TabsTrigger value="profile">Dados pessoais</TabsTrigger>
-          <TabsTrigger value="addresses">Endereços</TabsTrigger>
-          <TabsTrigger value="security">Segurança</TabsTrigger>
-        </TabsList>
+        <div className="mb-6 overflow-x-auto">
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="profile">Dados pessoais</TabsTrigger>
+            <TabsTrigger value="addresses">Endereços</TabsTrigger>
+            <TabsTrigger value="security">Segurança</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="profile">
           <ProfileContainer user={user} />

@@ -1,3 +1,4 @@
+import { Package } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -5,6 +6,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { EmptyState } from "@/components/layout/empty-state";
+import { ErrorState } from "@/components/layout/error-state";
 import { ProductGrid } from "../components/grid";
 import { ProductTableRow } from "../components/table-row";
 import { ProductGridSkeleton } from "../components/skeletons/product-grid-skeleton";
@@ -21,30 +24,6 @@ type ListProductContainerProps = {
   onDelete?: (id: string) => void;
 };
 
-function EmptyState() {
-  return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <p className="text-lg font-medium">Nenhum produto encontrado</p>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Tente ajustar os filtros ou cadastre um novo produto.
-      </p>
-    </div>
-  );
-}
-
-function ErrorState() {
-  return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <p className="text-lg font-medium text-destructive">
-        Erro ao carregar produtos
-      </p>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Tente novamente mais tarde.
-      </p>
-    </div>
-  );
-}
-
 export function ListProductContainer({
   products,
   isLoading,
@@ -55,13 +34,27 @@ export function ListProductContainer({
   onDelete,
 }: ListProductContainerProps) {
   if (isLoading)
-    return mode === "table" ? <ProductTableSkeleton /> : <ProductGridSkeleton />;
-  if (isError) return <ErrorState />;
-  if (products.length === 0) return <EmptyState />;
+    return mode === "table" ? (
+      <ProductTableSkeleton />
+    ) : (
+      <ProductGridSkeleton />
+    );
+
+  if (isError)
+    return <ErrorState message="Não foi possível carregar os produtos." />;
+
+  if (products.length === 0)
+    return (
+      <EmptyState
+        icon={Package}
+        title="Nenhum produto encontrado"
+        description="Tente ajustar os filtros ou cadastre um novo produto."
+      />
+    );
 
   if (mode === "table") {
     return (
-      <div className="rounded-md border">
+      <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
